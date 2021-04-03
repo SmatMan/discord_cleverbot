@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import cooldown
 import asyncio
 
 import cleverbotfree.cbfree
@@ -15,6 +16,7 @@ async def on_ready():
     print("Bot is ready.")
 
 @bot.command(aliases=['talk', 'start_conversation'])
+@cooldown(1, 100000)
 async def start(ctx):
     await ctx.send("Starting up...")
     cb = cleverbotfree.cbfree.Cleverbot()
@@ -33,10 +35,15 @@ async def start(ctx):
                 botResponse = cb.get_response()
             await ctx.send(botResponse)
         cb.browser.close()
+        start.reset_cooldown(ctx)
         stopEmbed = discord.Embed(title="Session Ended.", description="Bye!", color=0xFF0000)
         await ctx.send(embed=stopEmbed)
     except KeyboardInterrupt:
         cb.browser.close()
-
+        start.reset_cooldown(ctx)
+@start.error
+async def start_error(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
+        await ctx.send(f"Hey, <@{ctx.message.author.id}>! Someone is already using the bot.")
 
 bot.run(cfg.token)
