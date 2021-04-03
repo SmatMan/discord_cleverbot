@@ -30,7 +30,7 @@ async def start(ctx):
             userInput = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
             if userInput.content == 'quit':
                 break
-            with ctx.typing():
+            async with ctx.typing():
                 cb.send_input(str(userInput.content))
                 botResponse = cb.get_response()
             await ctx.send(botResponse)
