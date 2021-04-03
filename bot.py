@@ -1,8 +1,8 @@
-import discord.py
+import discord
 from discord.ext import commands
 import asyncio
 
-import cleverbot_free
+import cleverbotfree.cbfree
 import time
 import sys
 
