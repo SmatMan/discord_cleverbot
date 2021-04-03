@@ -8,3 +8,6 @@ import sys
 
 import config as cfg # config.py file
 
+bot = commands.Bot(command_prefix='.')
+
+bot.run(cfg.token)
